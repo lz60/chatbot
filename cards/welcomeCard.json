@@ -1,0 +1,30 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "Image",
+      "url": "https://www.enukesoftware.com/blog/wp-content/uploads/2019/11/airplane-4256362_960_720.jpg",
+      "size": "stretch"
+    },
+    {
+      "type": "TextBlock",
+      "spacing": "medium",
+      "size": "default",
+      "weight": "bolder",
+      "text": "Welcome on our travel agency !  I am Bob the bot !",
+      "wrap": true,
+      "maxLines": 0
+    },
+    {
+      "type": "TextBlock",
+      "size": "default",
+      "isSubtle": true,
+      "text": "I'm a bot designed to help you in your booking process.\n Just ask me whatever you like !\nNote: for internal statistics, your conversation could be saved.",
+      "wrap": true,
+      "maxLines": 0
+    }
+  ]
+  
+}

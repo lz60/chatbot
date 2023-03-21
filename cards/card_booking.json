@@ -1,0 +1,223 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "speak": "<s>Flight KL0605 to San Fransisco has been delayed.</s><s>It will not leave until 10:10 AM.</s>",
+    "body": [
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto"
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Flight Status",
+                            "horizontalAlignment": "Center",
+                            "isSubtle": true,
+                            "wrap": true
+                        },
+                        {
+                            "type": "Image",
+                            "size": "Small",
+                            "url": "https://adaptivecards.io/content/airplane.png",
+                            "altText": "Airplane",
+                            "horizontalAlignment": "Center"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "BOOKED",
+                            "horizontalAlignment": "Center",
+                            "spacing": "None",
+                            "size": "ExtraLarge",
+                            "color": "Good",
+                            "wrap": true,
+                            "weight": "Bolder",
+                            "isSubtle": true,
+                            "maxLines": -2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "separator": true,
+            "spacing": "Medium",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "{seat_class} class",
+                            "isSubtle": true,
+                            "weight": "Bolder",
+                            "wrap": true,
+                            "size": "Large"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "{adult} adults",
+                            "spacing": "Small",
+                            "wrap": true,
+                            "color": "Dark"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "{children} children",
+                            "spacing": "Small",
+                            "wrap": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "spacing": "Medium",
+            "separator": true,
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Departure",
+                            "isSubtle": true,
+                            "horizontalAlignment": "Left",
+                            "weight": "Bolder",
+                            "wrap": true,
+                            "size": "Medium"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "{str_date}",
+                            "color": "Warning",
+                            "weight": "Bolder",
+                            "horizontalAlignment": "Left",
+                            "spacing": "Small",
+                            "wrap": true,
+                            "size": "Large"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Budget",
+                            "isSubtle": true,
+                            "weight": "Bolder",
+                            "wrap": true,
+                            "horizontalAlignment": "Center",
+                            "size": "Medium"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "${budget} ",
+                            "spacing": "Small",
+                            "wrap": true,
+                            "horizontalAlignment": "Center",
+                            "size": "Medium",
+                            "color": "Warning"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Arrival",
+                            "isSubtle": true,
+                            "horizontalAlignment": "Right",
+                            "weight": "Bolder",
+                            "wrap": true,
+                            "size": "Medium"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "{end_date}",
+                            "color": "Warning",
+                            "horizontalAlignment": "Right",
+                            "weight": "Bolder",
+                            "spacing": "Small",
+                            "wrap": true,
+                            "size": "Large"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "spacing": "Medium",
+            "separator": true,
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "{or_city}",
+                            "size": "ExtraLarge",
+                            "color": "Accent",
+                            "spacing": "None",
+                            "wrap": true,
+                            "weight": "Bolder",
+                            "isSubtle": false
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": " ",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Image",
+                            "url": "https://adaptivecards.io/content/airplane.png",
+                            "altText": "Airplane",
+                            "size": "Medium"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "{dst_city}",
+                            "horizontalAlignment": "Right",
+                            "size": "ExtraLarge",
+                            "color": "Accent",
+                            "spacing": "None",
+                            "wrap": true,
+                            "weight": "Bolder"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "backgroundImage": {
+        "url": "https://img.freepik.com/free-vector/watercolor-stains-abstract-background_23-2149107181.jpg?w=2000"
+    }
+}
