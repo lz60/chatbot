@@ -18,10 +18,10 @@ class DefaultConfig:
     PORT = 3978  
     
     # Azure bot ID (if you are deploying with Azure Bot resource)
-    APP_ID = os.environ.get("MicrosoftAppId", "")  
+    APP_ID = os.environ.get("MicrosoftAppId", "98b2b27c-d7aa-4ebd-badf-c6ec1945b4d6")  
     
     # Azure bot password (if you are deploying with Azure Bot resource)
-    APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "")  
+    APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "ZqK8Q~XMv3_7XOh7MYwDJDlMjSaf9eVoncRwpa-b")  
     
     # LUIS app ID
     LUIS_APP_ID = os.environ.get("LuisAppId", "871ac5ee-9231-4e07-bbdd-9b3038148ca1")  
@@ -31,9 +31,7 @@ class DefaultConfig:
     
     # Authoring or prediction LUIS app endpoint
     LUIS_API_HOST_NAME = os.environ.get("LuisAPIHostName", "https://chatbotvoyage-authoring.cognitiveservices.azure.com/")
-    APP_PASSWORD = os.environ.get("LuisAPIHostName", " ")
-    APP_ID = os.environ.get("LuisAPIHostName", " ")
-	 
+  
     
     # Application Insights instrumentation key
     APPINSIGHTS_INSTRUMENTATION_KEY = os.environ.get("APPINSIGHTS_INSTRUMENTATIONKEY", "b0c4a284-4666-42f1-9c69-827b6e186019")

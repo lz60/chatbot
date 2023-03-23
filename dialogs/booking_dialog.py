@@ -13,6 +13,7 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 from botbuilder.schema import InputHints, Attachment
 from .bot_messages import BotSentences
 import re, os, json
+from botbuilder.core.bot_telemetry_client import Severity
 
 SEVERITY_LEVEL = {
     0: "DEBUG",
@@ -80,6 +81,12 @@ class BookingDialog(CancelAndHelpDialog):
             self.booking_details_card = card_file.read()
         patterns = ['{dst_city}', '{or_city}', '{str_date}', '{end_date}', '{budget}', '{adult}', '{children}', '{seat_class}'] # placeholders de la card
         self.booking_details_card_regex = re.compile("(%s)" % "|".join(map(re.escape, patterns)))
+        
+        # Define user_messages, a list of all messages that a client wrote during a conversation
+        self.user_messages = []
+        
+        # Defines performances log file
+        self.performance_path = "performance_logs.csv"
 
         
     async def display_booking_details_summary(self, context, booking_details):
@@ -96,16 +103,23 @@ class BookingDialog(CancelAndHelpDialog):
     async def destination_step(
         self, step_context: WaterfallStepContext
     ) -> DialogTurnResult:
+        
         booking_details = step_context.options
-
+        booking_details.reset_turns()
+        
         if booking_details.destination is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_DST_CITY)
+                        
             return await step_context.prompt(
                 TextPrompt.__name__,
                 PromptOptions(
                     prompt=MessageFactory.text(BotSentences.BOOK_REQUEST_DST_CITY)
                 ),
             )  # pylint: disable=line-too-long,bad-continuation
-
+        
         return await step_context.next(booking_details.destination)
 
     async def origin_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
@@ -113,7 +127,13 @@ class BookingDialog(CancelAndHelpDialog):
 
         # Capture the response to the previous step's prompt
         booking_details.destination = step_context.result
+        
         if booking_details.origin is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_DST_CITY)
+            
             return await step_context.prompt(
                 TextPrompt.__name__,
                 PromptOptions(
@@ -125,10 +145,16 @@ class BookingDialog(CancelAndHelpDialog):
 
     async def start_date_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         booking_details = step_context.options
-
+        
         # Capture the response to the previous step's prompt
         booking_details.origin = step_context.result
+
         if booking_details.start_date is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_STR_DATE_1)
+            
             return await step_context.prompt(
                 DateTimePrompt.__name__,
                 PromptOptions(
@@ -140,10 +166,16 @@ class BookingDialog(CancelAndHelpDialog):
 
     async def end_date_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         booking_details = step_context.options
-
+        
         # Capture the response to the previous step's prompt
         booking_details.start_date = step_context.result
+
         if booking_details.end_date is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_END_DATE_1)
+            
             return await step_context.prompt(
                 DateTimePrompt.__name__,
                 PromptOptions(
@@ -155,10 +187,15 @@ class BookingDialog(CancelAndHelpDialog):
 
     async def n_adult_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         booking_details = step_context.options
-
+        
         # Capture the response to the previous step's prompt
         booking_details.end_date = step_context.result
+
         if booking_details.n_adult is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_ADULT)
             
             return await step_context.prompt(
                 NumberPrompt.__name__,
@@ -171,10 +208,16 @@ class BookingDialog(CancelAndHelpDialog):
 
     async def n_children_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         booking_details = step_context.options
-
+        
         # Capture the response to the previous step's prompt
         booking_details.n_adult = step_context.result
+
         if booking_details.n_children is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_CHILDREN)
+            
             return await step_context.prompt(
                 NumberPrompt.__name__,
                 PromptOptions(
@@ -188,9 +231,15 @@ class BookingDialog(CancelAndHelpDialog):
     async def budget_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         
         booking_details = step_context.options
+                
         booking_details.n_children = step_context.result
 
         if booking_details.budget is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_BUDGET)
+            
             return await step_context.prompt(
                 NumberPrompt.__name__,
                 PromptOptions(
@@ -204,9 +253,15 @@ class BookingDialog(CancelAndHelpDialog):
     async def seat_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         
         booking_details = step_context.options
+                
         booking_details.budget = step_context.result
 
         if booking_details.seat is None:
+            # Append user message in the user_message list and in the turn list
+            booking_details.turns.append(step_context.context.activity.text)
+            self.user_messages.append(step_context.context.activity.text)
+            booking_details.turns.append(BotSentences.BOOK_REQUEST_CLASS)
+            
             return await step_context.prompt(
                 TextPrompt.__name__,
                 PromptOptions(
@@ -226,6 +281,10 @@ class BookingDialog(CancelAndHelpDialog):
         booking_details = step_context.options
 
         booking_details.seat = step_context.result
+        # Append user message in the user_message list and in the turn list
+        booking_details.turns.append(step_context.context.activity.text)
+        self.user_messages.append(step_context.context.activity.text)
+        
         # Allows you to correctly format the date entered
         if type(booking_details.start_date) is str:
             start_date = booking_details.start_date
@@ -251,17 +310,6 @@ class BookingDialog(CancelAndHelpDialog):
         """Complete the interaction and end the dialog."""
         
         booking_details = step_context.options
-
-        if step_context.result:
-            self.logger.setLevel(logging.INFO)
-            self.logger.info('Good answer!')
-            print("Good answer")
-            
-            # If everything is OK, send the summary to the user
-            await self.display_booking_details_summary(step_context, booking_details)
-            
-            return await step_context.end_dialog(booking_details)
-            
         
         if type(booking_details.start_date) is str:
             start_date = booking_details.start_date
@@ -272,8 +320,9 @@ class BookingDialog(CancelAndHelpDialog):
             end_date = booking_details.end_date
         else:
             end_date = booking_details.end_date[-1].value
-            
+                          
         properties = {}
+        properties["Turns"] = booking_details.turns
         properties["Destination"] = booking_details.destination
         properties["Origin"] = booking_details.origin
         properties["Start_date"] = start_date
@@ -283,10 +332,32 @@ class BookingDialog(CancelAndHelpDialog):
         properties["N_children"] = int(booking_details.n_children)
         properties["Seat"] = booking_details.seat
 
+        if step_context.result:
+            self.logger.setLevel(logging.INFO)
+            self.logger.info('Good answer!')
+            
+            # If everything is OK, only track the metric that indicates the number of good confirmations
+            self.telemetry_client.track_metric('BOOKING_CONFIRMATION', 1.0)
+            print("Good answer")
+            print("xxxx") 
+            # Log datas in the performance file
+            self.log_performances(properties, success="1")
+            print(os.getcwd())            
+            # If everything is OK, send the summary to the user
+            await self.display_booking_details_summary(step_context, booking_details)
+            
+            return await step_context.end_dialog(booking_details)
+
         
         self.logger.error("Bad answer!",extra={'custom_dimensions':properties})
         print("Bad answer")
         
+        # Log datas in the performance file
+        self.log_performances(properties, success="0")
+        print(os.getcwd())
+        # If there is a problem and the user didn't confirm, track the metric and set a trace for further anlalysis        
+        self.telemetry_client.track_trace('BOOKING_CONFIRMATION_NO', properties = properties, severity=Severity.warning)
+        self.telemetry_client.track_metric('BOOKING_CONFIRMATION', 0.0)
 
         return await step_context.end_dialog()
 
@@ -294,3 +365,17 @@ class BookingDialog(CancelAndHelpDialog):
         """Ensure time is correct."""
         timex_property = Timex(timex)
         return "definite" not in timex_property.types
+        
+    
+    def log_performances(self, properties: dict, success:str):
+        
+        """Log performance datas for local analysis"""
+        
+        if not os.path.exists(self.performance_path):
+            with open(self.performance_path, "w") as f:
+                f.write("turns, dst_city, or_city, dep_date, ret_date, budget, adults, children, seat_class, success\n")
+        
+        with open(self.performance_path, "a") as f:
+            f.write("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}\n".format(" | ".join(properties["Turns"]), properties["Destination"], properties["Origin"], properties["Start_date"], properties["End_date"], properties["Budget"], properties["N_adult"], properties["N_children"], properties["Seat"], success))
+            
+        
