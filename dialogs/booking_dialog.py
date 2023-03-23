@@ -339,10 +339,8 @@ class BookingDialog(CancelAndHelpDialog):
             # If everything is OK, only track the metric that indicates the number of good confirmations
             self.telemetry_client.track_metric('BOOKING_CONFIRMATION', 1.0)
             print("Good answer")
-            print("xxxx") 
             # Log datas in the performance file
-            self.log_performances(properties, success="1")
-            print(os.getcwd())            
+            self.log_performances(properties, success="1")          
             # If everything is OK, send the summary to the user
             await self.display_booking_details_summary(step_context, booking_details)
             
@@ -354,7 +352,6 @@ class BookingDialog(CancelAndHelpDialog):
         
         # Log datas in the performance file
         self.log_performances(properties, success="0")
-        print(os.getcwd())
         # If there is a problem and the user didn't confirm, track the metric and set a trace for further anlalysis        
         self.telemetry_client.track_trace('BOOKING_CONFIRMATION_NO', properties = properties, severity=Severity.warning)
         self.telemetry_client.track_metric('BOOKING_CONFIRMATION', 0.0)
