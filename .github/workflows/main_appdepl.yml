@@ -26,10 +26,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          
-      - name: Install dotenv
-        run: |
-          npm install dotenv
+        
           
       - name: Install dependencies
         run: pip install -r requirements.txt
